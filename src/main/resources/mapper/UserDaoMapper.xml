@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="zhihui.backend.mapper.UserDaoMapper">
+
+    <!--    查询单个用户-->
+    <select id="loadUserByUsername" resultType="User">
+        select user_id,
+               user_email,
+               user_password,
+               user_name,
+               user_face_url,
+               user_major,
+               user_grade,
+               user_state,
+               user_create_time,
+               user_update_time,
+               user_delete_time,
+               user_enabled,
+               user_account_non_expired,
+               user_account_non_locked,
+               user_credentials_non_expired
+        from all_user
+        where user_name = #{username};
+    </select>
+
+    <!--    查询单个用户-->
+    <select id="loadUserByEmail" resultType="User">
+        select user_id,
+               user_email,
+               user_password,
+               user_name,
+               user_face_url,
+               user_major,
+               user_grade,
+               user_state,
+               user_create_time,
+               user_update_time,
+               user_delete_time,
+               user_enabled,
+               user_account_non_expired,
+               user_account_non_locked,
+               user_credentials_non_expired
+        from all_user
+        where user_email = #{email};
+    </select>
+
+</mapper>
