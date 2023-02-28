@@ -1,0 +1,35 @@
+spring:
+  mail:
+    host:
+    username:
+    password:
+    port: 587
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
+      mail.smtp.starttls.required: true
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/zhihui?characterEncoding=UTF-8&useSSL=false
+    username: root
+    password: 123456
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: true
+  type-aliases-package: zhihui.backend.pojo
+random-utils:
+  sed: 1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ
+  length: 4
+redis:
+  db: 2
+  hostname: localhost
+  password:
+  port: 6379
+email:
+  enable: false
+  expire-time: 5
+  send-as:
