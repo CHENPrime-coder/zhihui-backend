@@ -11,6 +11,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
@@ -29,20 +30,13 @@ import zhihui.backend.util.SpringContextHolder;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 @Slf4j
-@Component
 public class LoginFilter extends UsernamePasswordAuthenticationFilter {
-    private final EmailAuthenticationProvider emailAuthenticationProvider;
-
-    private final DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-
     @Autowired
-    public LoginFilter(EmailAuthenticationProvider emailAuthenticationProvider, AuthenticationConfiguration authenticationConfiguration) throws Exception {
-        this.emailAuthenticationProvider = emailAuthenticationProvider;
-        setAuthenticationManager(authenticationConfiguration.getAuthenticationManager());
-
+    public LoginFilter() {
         this.setFilterProcessesUrl("/login");
         // 登陆成功处理器
         this.setAuthenticationSuccessHandler(new CustomAuthSuccessHandler());
@@ -55,7 +49,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         super.setAuthenticationManager(authenticationManager);
     }
 
-    @SneakyThrows
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         // 1. 判断是否为 POST 方式
@@ -65,7 +58,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         // 2. 判断是否以 JSON 格式
         if (request.getContentType().equals(MediaType.APPLICATION_JSON_VALUE)) {
             // 3. 从 JSON 中获取用户输入的用户名和密码
-            Map<String, Object> userInfo = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+            Map<String, Object> userInfo = null;
+            try {
+                userInfo = new ObjectMapper().readValue(request.getInputStream(), Map.class);
+            } catch (IOException e) {
+                throw new IllegalArgumentException("登陆请求参数获取失败："+e.getMessage());
+            }
 
             String typeParam = (String) userInfo.get("type");
             LoginTypeConstant type = LoginTypeConstant.valueOf(typeParam);
@@ -76,17 +74,20 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                     String captcha = (String) userInfo.get("captcha");
 
                     // 封装验证需要的东西
-                    EmailAuthenticationToken authenticationToken = new EmailAuthenticationToken(email);
-                    authenticationToken.setVc(captcha);
+                    EmailAuthenticationToken emailAuthenticationToken = new EmailAuthenticationToken(email);
+                    emailAuthenticationToken.setVc(captcha);
 
                     // 执行验证
-                    return getAuthenticationManager().authenticate(authenticationToken);
+                    return getAuthenticationManager().authenticate(emailAuthenticationToken);
                 case CLASSIC:
                     // 用户名，密码登陆
                     String username = (String) userInfo.get(getUsernameParameter());
                     String password = (String) userInfo.get(getPasswordParameter());
 
-                    break;
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+
+                    // 执行验证
+                    return getAuthenticationManager().authenticate(usernamePasswordAuthenticationToken);
                 default:
                     log.error("登陆方式不存在 type: "+typeParam);
                     throw new IllegalArgumentException("登陆方式不存在");

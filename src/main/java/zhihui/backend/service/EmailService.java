@@ -22,14 +22,15 @@ import java.util.concurrent.TimeUnit;
 @ConfigurationProperties(prefix = "email")
 public class EmailService {
 
+    private Boolean enable;
     private final JavaMailSender sender;
-    private final RedisTemplate<String, String> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
     private final RandomUtils randomUtils;
     private Integer expireTime = 5;
     private String sendAs = "";
 
     @Autowired
-    public EmailService(RedisTemplate<String, String> redisTemplate, RandomUtils randomUtils, JavaMailSender javaMailSender) {
+    public EmailService(RedisTemplate redisTemplate, RandomUtils randomUtils, JavaMailSender javaMailSender) {
         this.redisTemplate = redisTemplate;
         this.randomUtils = randomUtils;
         this.sender = javaMailSender;
@@ -49,14 +50,38 @@ public class EmailService {
         String code = randomUtils.randomVerifyCode();
         redisTemplate.opsForValue().set(CommonConstant.EMAIL_VC_PREFIX+to, code, expireTime, TimeUnit.MINUTES);
 
-        SimpleMailMessage mailMessage = new SimpleMailMessage();
-        mailMessage.setFrom(sendAs);
-        mailMessage.setTo(to);
-        mailMessage.setSubject("知汇-邮箱验证码");
-        mailMessage.setText("您的验证码是: "+code);
+        if (enable) {
+            SimpleMailMessage mailMessage = new SimpleMailMessage();
+            mailMessage.setFrom(sendAs);
+            mailMessage.setTo(to);
+            mailMessage.setSubject("知汇-邮箱验证码");
+            mailMessage.setText("您的验证码是: "+code);
 
-        sender.send(mailMessage);
-        log.info("邮件发送成功 to: "+to);
+            sender.send(mailMessage);
+            log.info("邮件发送成功 to: "+to);
+        } else {
+            log.info("开发环境下，邮件未发送 code: "+code);
+        }
+    }
+
+    /**
+     * 邮件验证码验证，用于注册前验证 邮件验证码
+     * @param email 邮件
+     * @param code 前端传的验证码
+     * @return 验证结果
+     */
+    public Boolean verifyCode(String email, String code) {
+        Object realCode = redisTemplate.opsForValue().get(CommonConstant.EMAIL_VC_PREFIX + email);
+
+        if (realCode == null) {
+            return false;
+        }
+
+        return realCode.toString().equals(code);
+    }
+
+    public void setEnable(Boolean enable) {
+        this.enable = enable;
     }
 
     public void setExpireTime(Integer expireTime) {

@@ -9,6 +9,7 @@
         select user_id,
                user_email,
                user_password,
+               user_name_id,
                user_name,
                user_face_url,
                user_major,
@@ -30,6 +31,7 @@
         select user_id,
                user_email,
                user_password,
+               user_name_id,
                user_name,
                user_face_url,
                user_major,
@@ -45,5 +47,12 @@
         from all_user
         where user_email = #{email};
     </select>
+
+    <!--    插入单个用户-->
+    <insert id="insertUser" parameterType="User">
+        insert into zhihui.all_user (zhihui.all_user.user_email, zhihui.all_user.user_password, zhihui.all_user.user_name_id,
+                                     zhihui.all_user.user_name, zhihui.all_user.user_major, zhihui.all_user.user_grade)
+        values (#{userEmail}, #{userPassword}, #{userNameId}, #{userName}, #{userMajor}, #{userGrade});
+    </insert>
 
 </mapper>

@@ -24,6 +24,7 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
 
         // 2. 格式转换并返回
         String json = new ObjectMapper().writeValueAsString(resultData);
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json;charset=utf-8");
         response.getWriter().print(json);
     }

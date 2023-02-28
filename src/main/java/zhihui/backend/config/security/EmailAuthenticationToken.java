@@ -18,13 +18,13 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
     public EmailAuthenticationToken(Object principal) {
         super(null);
         this.principal = principal;
-        setAuthenticated(false);
+        super.setAuthenticated(false);
     }
 
     public EmailAuthenticationToken(Object principal, Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
-        setAuthenticated(false);
+        super.setAuthenticated(true);
     }
 
     public String getVc() {
@@ -43,14 +43,5 @@ public class EmailAuthenticationToken extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return principal;
-    }
-
-    @Override
-    public void setAuthenticated(boolean isAuthenticated) throws IllegalArgumentException {
-        if (isAuthenticated) {
-            throw new IllegalArgumentException("Cannot set this token to trusted - use constructor which takes a GrantedAuthority list instead");
-        } else {
-            super.setAuthenticated(false);
-        }
     }
 }

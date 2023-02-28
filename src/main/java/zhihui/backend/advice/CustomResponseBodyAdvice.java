@@ -31,7 +31,7 @@ public class CustomResponseBodyAdvice implements ResponseBodyAdvice<Object> {
 
         // 如果返回值是 String 就不处理直接返回
         if (body instanceof String) {
-            return new ObjectMapper().writeValueAsString(body);
+            return new ObjectMapper().writeValueAsString(ResultData.success(body));
         }
 
         return ResultData.success(body);

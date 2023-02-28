@@ -1,5 +1,6 @@
 package zhihui.backend.mapper;
 
+import org.apache.ibatis.annotations.CacheNamespace;
 import org.apache.ibatis.annotations.Mapper;
 import zhihui.backend.pojo.User;
 
@@ -24,4 +25,11 @@ public interface UserDaoMapper {
      * @return 查询到的用户
      */
     User loadUserByEmail(String email);
+
+    /**
+     * 插入用户表
+     * @param user 用户
+     * @return 插入结果
+     */
+    Integer insertUser(User user);
 }

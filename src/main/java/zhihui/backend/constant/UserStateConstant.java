@@ -12,7 +12,7 @@ public enum UserStateConstant {
     /**
      * 普通用户
      */
-    USER(0, "user"),
+    USER(2, "user"),
     /**
      * 管理员
      */
@@ -20,7 +20,7 @@ public enum UserStateConstant {
     /**
      * 超级管理员
      */
-    ADMIN(2, "admin");
+    ADMIN(0, "admin");
 
     UserStateConstant(Integer code, String info) {
         this.code = code;

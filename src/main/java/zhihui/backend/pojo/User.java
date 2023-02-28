@@ -8,6 +8,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import zhihui.backend.constant.UserStateConstant;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
@@ -20,11 +21,12 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class User implements UserDetails {
+public class User implements UserDetails, Serializable {
 
     private Long userId;
     private String userEmail;
     private String userPassword;
+    private String userNameId;
     private String userName;
     private String userFaceUrl;
     private String userMajor;

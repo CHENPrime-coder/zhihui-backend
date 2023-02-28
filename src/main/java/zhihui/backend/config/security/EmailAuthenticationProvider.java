@@ -7,9 +7,8 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.AuthenticationServiceException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.stereotype.Component;
 import zhihui.backend.constant.CommonConstant;
+import zhihui.backend.pojo.User;
 import zhihui.backend.service.UserServiceImpl;
 
 /**
@@ -17,18 +16,13 @@ import zhihui.backend.service.UserServiceImpl;
  * @author CHENPrime-Coder
  */
 @Slf4j
-@Component
 public class EmailAuthenticationProvider implements AuthenticationProvider {
 
-    private final UserServiceImpl userService;
-
-    private final RedisTemplate<String, String> redisTemplate;
+    @Autowired
+    private UserServiceImpl userService;
 
     @Autowired
-    public EmailAuthenticationProvider(UserServiceImpl userService, RedisTemplate<String, String> redisTemplate) {
-        this.userService = userService;
-        this.redisTemplate = redisTemplate;
-    }
+    private RedisTemplate redisTemplate;
 
     /**
      * 执行认证
@@ -48,11 +42,15 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
         }
 
         // 认证成功，获取用户信息
-        UserDetails user = userService.loadUserByEmail((String) token.getPrincipal());
+        User user = (User) userService.loadUserByEmail((String) token.getPrincipal());
 
         if (user == null) {
             throw new AuthenticationServiceException("无法获取用户信息");
         }
+        if (user.getUserDeleteTime() != null) {
+            throw new AuthenticationServiceException("用户已删除");
+        }
+
         EmailAuthenticationToken result =
                 new EmailAuthenticationToken(user, user.getAuthorities());
 
@@ -74,9 +72,9 @@ public class EmailAuthenticationProvider implements AuthenticationProvider {
      * @return 检测结果
      */
     private Boolean checkCode(String email, String captcha) {
-        String code = redisTemplate.opsForValue().get(CommonConstant.EMAIL_VC_PREFIX + email);
+        Object code = redisTemplate.opsForValue().get(CommonConstant.EMAIL_VC_PREFIX + email);
         if (code != null) {
-            return code.equals(captcha);
+            return code.toString().equals(captcha);
         }
 
         return false;
