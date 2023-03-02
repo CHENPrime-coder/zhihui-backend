@@ -1,8 +1,8 @@
 spring:
   mail:
     host: smtp.office365.com
-    username: '**********@outlook.com'
-    password: '**********'
+    username: chenbprime@outlook.com
+    password: 200573Cjj
     port: 587
     properties:
       mail.smtp.auth: true
@@ -12,7 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/zhihui?characterEncoding=UTF-8&useSSL=false
     username: root
-    password: 123456
+    password: 8d41e114c69a6ebe53d5
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
 mybatis:
@@ -32,4 +32,4 @@ redis:
 email:
   enable: true
   expire-time: 5
-  send-as: '**********@outlook.com'
+  send-as: chenbprime@outlook.com

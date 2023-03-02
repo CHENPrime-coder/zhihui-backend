@@ -30,7 +30,7 @@ public class RegController {
         if (user.getUserEmail() == null || user.getUsername() == null || user.getUserPassword() == null ||
                 user.getUserMajor() == null || user.getUserGrade() == null) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            return ResultData.error(HttpServletResponse.SC_BAD_REQUEST, "请求参数不完整");
+            return ResultData.error("请求参数不完整");
         }
 
         ResultData<String> insertResult = userService.insertUser(user);

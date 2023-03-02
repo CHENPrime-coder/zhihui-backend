@@ -26,7 +26,7 @@ public class CustomExceptionAdvice {
     public ResultData<String> exception(Exception e) {
         log.error("发生异常 message="+e.getMessage()+" ; exception="+e);
 
-        return ResultData.error(ResponseStateConstant.STATE_SERVER_ERROR.getCode(), e.getMessage());
+        return ResultData.error(e.getMessage());
     }
 
 }

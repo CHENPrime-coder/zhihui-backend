@@ -76,13 +76,13 @@ public class UserServiceImpl implements UserDetailsService {
             // 邮箱重复
             log.error("用户注册邮箱重复 email: "+user.getUserEmail());
 
-            return ResultData.error(40000, "用户注册邮箱重复");
+            return ResultData.error("用户注册邮箱重复");
         }
 
         // 用户注册失败
         if (integer != 1) {
             log.error("用户注册失败 email: "+user.getUserEmail());
-            return ResultData.error(40001, "注册失败");
+            return ResultData.error("注册失败");
         }
         // 注册成功
         return ResultData.success("注册成功");

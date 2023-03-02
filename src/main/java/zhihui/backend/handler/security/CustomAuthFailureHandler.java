@@ -19,7 +19,7 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
     @Override
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         // 1. 填充返回值
-        ResultData<Object> resultData = ResultData.error(ResponseStateConstant.STATE_UNAUTHORIZED.getCode(),
+        ResultData<Object> resultData = ResultData.error(
                 ResponseStateConstant.STATE_UNAUTHORIZED.getMessage()+": "+exception.getMessage());
 
         // 2. 格式转换并返回
