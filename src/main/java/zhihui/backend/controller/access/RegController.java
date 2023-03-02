@@ -25,11 +25,10 @@ public class RegController {
     }
 
     @PostMapping("/reg")
-    public ResultData<String> reg(@RequestBody User user, HttpServletResponse response) {
+    public ResultData<String> reg(@RequestBody User user) {
         // 验证参数完整性
         if (user.getUserEmail() == null || user.getUsername() == null || user.getUserPassword() == null ||
                 user.getUserMajor() == null || user.getUserGrade() == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ResultData.error("请求参数不完整");
         }
 

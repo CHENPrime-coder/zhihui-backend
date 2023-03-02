@@ -35,9 +35,8 @@ public class EmailController {
     }
 
     @PostMapping("/verify")
-    public ResultData<String> verify(@RequestBody HashMap<String, Object> body, HttpServletResponse response) {
+    public ResultData<String> verify(@RequestBody HashMap<String, Object> body) {
         if (body.get(EMAIL_PARAM_NAME) == null || body.get(CODE_PARAM_NAME) == null) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ResultData.error("请求参数不完整");
         }
 
@@ -45,7 +44,6 @@ public class EmailController {
                 body.get(CODE_PARAM_NAME).toString());
         // 验证失败
         if (! verifyResult) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             return ResultData.error("验证失败，验证码错误");
         }
 
