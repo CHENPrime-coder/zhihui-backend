@@ -30,6 +30,13 @@ redis:
   password:
   port: 6379
 email:
-  enable: true
+  enable: false
   expire-time: 5
   send-as: chenbprime@outlook.com
+file:
+  image-path: '/zhihui/zhihui-image/'
+  file-path: '/zhihui/zhihui-file/'
+  video-path: '/zhihui/zhihui-video/'
+rsa:
+  private-key-file-path: '/zhihui/zhihui-keys/private.pem'
+  public-key-file-path: '/zhihui/zhihui-keys/public.pem'

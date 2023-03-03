@@ -5,7 +5,7 @@
 <mapper namespace="zhihui.backend.mapper.UserDaoMapper">
 
     <!--    查询单个用户-->
-    <select id="loadUserByUsername" resultType="User">
+    <select id="loadUserByUsernameId" resultType="User">
         select user_id,
                user_email,
                user_password,
@@ -23,7 +23,7 @@
                user_account_non_locked,
                user_credentials_non_expired
         from all_user
-        where user_name = #{username};
+        where user_name_id = #{usernameId};
     </select>
 
     <!--    查询单个用户-->

@@ -13,9 +13,15 @@ import zhihui.backend.exception.EmailNotFoundException;
 import zhihui.backend.mapper.UserDaoMapper;
 import zhihui.backend.pojo.ResultData;
 import zhihui.backend.pojo.User;
+import zhihui.backend.util.RsaUtils;
 
-import java.util.HashMap;
-import java.util.Map;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.util.UUID;
 
 /**
@@ -27,19 +33,21 @@ import java.util.UUID;
 public class UserServiceImpl implements UserDetailsService {
 
     private final UserDaoMapper userDaoMapper;
+    private final RsaUtils rsaUtils;
 
     @Autowired
-    public UserServiceImpl(UserDaoMapper userDaoMapper) {
+    public UserServiceImpl(UserDaoMapper userDaoMapper, RsaUtils rsaUtils) {
         this.userDaoMapper = userDaoMapper;
+        this.rsaUtils = rsaUtils;
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userDaoMapper.loadUserByUsername(username);
+    public UserDetails loadUserByUsername(String usernameId) throws UsernameNotFoundException {
+        User user = userDaoMapper.loadUserByUsernameId(usernameId);
 
         // 1. 查不到用户
         if (ObjectUtils.isEmpty(user)) {
-            throw new UsernameNotFoundException("用户名不存在");
+            throw new UsernameNotFoundException("用户不存在");
         }
 
         // 2. 返回
@@ -58,14 +66,16 @@ public class UserServiceImpl implements UserDetailsService {
         return user;
     }
 
-    public ResultData<String> insertUser(User user) {
+    public ResultData<String> insertUser(User user) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         user.setUserNameId("zhihui_"+uuid);
+
+        String decodedPassword = rsaUtils.decrypt(user.getUserPassword());
 
         // 密码加密
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-        String encodedPassword = passwordEncoder.encode(user.getUserPassword());
+        String encodedPassword = passwordEncoder.encode(decodedPassword);
         user.setUserPassword("{bcrypt}"+encodedPassword);
 
         // 执行插入用户操作

@@ -8,7 +8,13 @@ import zhihui.backend.pojo.ResultData;
 import zhihui.backend.pojo.User;
 import zhihui.backend.service.UserServiceImpl;
 
-import javax.servlet.http.HttpServletResponse;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 
 /**
  * 注册控制器
@@ -19,13 +25,14 @@ public class RegController {
 
     private final UserServiceImpl userService;
 
+
     @Autowired
     public RegController(UserServiceImpl userService) {
         this.userService = userService;
     }
 
     @PostMapping("/reg")
-    public ResultData<String> reg(@RequestBody User user) {
+    public ResultData<String> reg(@RequestBody User user) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
         // 验证参数完整性
         if (user.getUserEmail() == null || user.getUsername() == null || user.getUserPassword() == null ||
                 user.getUserMajor() == null || user.getUserGrade() == null) {

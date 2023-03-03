@@ -14,10 +14,10 @@ public interface UserDaoMapper {
     /**
      * 根据用户名返回查询到的用户
      *
-     * @param username 用户名
+     * @param usernameId 用户名 zhihui_xxxxxxxxxxxxxxxxxxxxx
      * @return 查询到的用户
      */
-    User loadUserByUsername(String username);
+    User loadUserByUsernameId(String usernameId);
 
     /**
      * 根据邮箱返回查询到的用户
