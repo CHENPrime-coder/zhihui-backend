@@ -1,11 +1,8 @@
 package zhihui.backend.util;
 
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Base64Utils;
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -89,8 +86,8 @@ public class RsaUtils {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, getRsaPublicKey());
             byte[] output = cipher.doFinal(content.getBytes());
-            BASE64Encoder encoder = new BASE64Encoder();
-            return encoder.encode(output);
+            byte[] encode = Base64Utils.encode(output);
+            return new String(encode, "UTF-8");
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -111,7 +108,7 @@ public class RsaUtils {
 
     //长度过长分割解密
     private String getMaxResultDecrypt(String str, Cipher cipher) throws IllegalBlockSizeException, BadPaddingException, IOException {
-        byte[] inputArray = new BASE64Decoder().decodeBuffer(str);
+        byte[] inputArray = Base64Utils.decode(str.getBytes("UTF-8"));
         int inputLength = inputArray.length;
         // 最大解密字节数，超出最大字节数需要分组加密
         int maxEncryptBlock = 256;
