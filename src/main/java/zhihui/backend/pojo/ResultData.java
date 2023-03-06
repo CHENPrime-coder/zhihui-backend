@@ -35,6 +35,21 @@ public class ResultData<E> {
     }
 
     /**
+     * 请求成功，但是处理失败了
+     * @param data 请求体
+     * @return 统一封装返回值
+     * @param <E> 请求体格式
+     */
+    public static <E> ResultData<E> success(String errMsg, E data) {
+        ResultData<E> resultData = new ResultData<>();
+        resultData.setErrCode(0);
+        resultData.setErrMsg(errMsg);
+        resultData.setData(data);
+        return resultData;
+    }
+
+
+    /**
      * 请求失败
      * @param message 信息
      * @return 统一封装返回值

@@ -34,7 +34,7 @@ public class SecurityConfig {
 
         // 处理需要认证的请求
         http.authorizeRequests(authz -> {
-           authz.mvcMatchers("/email/send","/email/verify",
+           authz.mvcMatchers("/email/send","/email/verify","/email/reg/send",
                    "/login","/reg").permitAll();
 
            authz.anyRequest().authenticated();

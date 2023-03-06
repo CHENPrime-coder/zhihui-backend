@@ -32,7 +32,7 @@ public class FileController {
                                                       @RequestParam("operationID") String operationID,
                                                       HttpServletRequest request) throws IOException {
         if (file == null || file.getOriginalFilename() == null) {
-            return ResultData.success("上传的文件或文件名为空");
+            return ResultData.success("上传的文件或文件名为空", null);
         }
 
         Map<String, Object> result = null;

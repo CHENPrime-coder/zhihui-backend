@@ -79,22 +79,25 @@ public class UserServiceImpl implements UserDetailsService {
         user.setUserPassword("{bcrypt}"+encodedPassword);
 
         // 执行插入用户操作
-        Integer integer;
-        try {
-            integer = userDaoMapper.insertUser(user);
-        } catch (DuplicateKeyException e) {
-            // 邮箱重复
-            log.error("用户注册邮箱重复 email: "+user.getUserEmail());
-
-            return ResultData.success("用户注册邮箱重复");
-        }
+        Integer integer = userDaoMapper.insertUser(user);
 
         // 用户注册失败
         if (integer != 1) {
             log.error("用户注册失败 email: "+user.getUserEmail());
-            return ResultData.success("注册失败");
+            return ResultData.success("注册失败", null);
         }
         // 注册成功
         return ResultData.success("注册成功");
+    }
+
+    /**
+     * 验证邮箱是否重复
+     * @param addr 邮箱
+     * @return 返回 true 就是没重复，反之就重复了
+     */
+    public Boolean checkEmail(String addr) {
+        Boolean result = userDaoMapper.selectEmail(addr) != 1;
+
+        return result;
     }
 }

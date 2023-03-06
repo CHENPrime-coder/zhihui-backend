@@ -32,4 +32,11 @@ public interface UserDaoMapper {
      * @return 插入结果
      */
     Integer insertUser(User user);
+
+    /**
+     * 检测邮箱重复
+     * @param addr 邮箱
+     * @return 重复的数量
+     */
+    Integer selectEmail(String addr);
 }

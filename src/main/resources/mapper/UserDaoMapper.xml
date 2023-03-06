@@ -55,4 +55,11 @@
         values (#{userEmail}, #{userPassword}, #{userNameId}, #{userName}, #{userMajor}, #{userGrade});
     </insert>
 
+    <!--    邮件是否重复-->
+    <select id="selectEmail" parameterType="String" resultType="int">
+        select count(*)
+        from all_user
+        where user_email = #{addr};
+    </select>
+
 </mapper>

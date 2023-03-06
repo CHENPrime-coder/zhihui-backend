@@ -36,7 +36,7 @@ public class RegController {
         // 验证参数完整性
         if (user.getUserEmail() == null || user.getUsername() == null || user.getUserPassword() == null ||
                 user.getUserMajor() == null || user.getUserGrade() == null) {
-            return ResultData.success("请求参数不完整");
+            return ResultData.success("请求参数不完整", null);
         }
 
         ResultData<String> insertResult = userService.insertUser(user);
