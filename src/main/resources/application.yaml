@@ -30,7 +30,7 @@ redis:
   password:
   port: 6379
 email:
-  enable: false
+  enable: true
   expire-time: 5
   send-as: chenbprime@outlook.com
 file:
