@@ -20,7 +20,7 @@ public class CustomAuthFailureHandler implements AuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
         // 1. 填充返回值
         ResultData<Object> resultData = ResultData.success(
-                ResponseStateConstant.STATE_UNAUTHORIZED.getMessage()+": "+exception.getMessage());
+                ResponseStateConstant.STATE_UNAUTHORIZED.getMessage()+": "+exception.getMessage(), null);
 
         // 2. 格式转换并返回
         String json = new ObjectMapper().writeValueAsString(resultData);
