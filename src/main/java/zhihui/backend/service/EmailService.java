@@ -56,7 +56,7 @@ public class EmailService {
             mailMessage.setTo(to);
             mailMessage.setSubject("知汇-邮箱验证码");
             mailMessage.setText("您好！\n" +
-                    "注册验证码："+code+"。\n" +
+                    "邮件验证码："+code+"。验证码将于5分钟后失效，请尽快使用。\n" +
                     "转给他人将导致ZhiHui帐号被盗和个人信息泄露，谨防诈骗，如非您操作请忽略。\n" +
                     "此致\n" +
                     "@ZhiHui团队");
