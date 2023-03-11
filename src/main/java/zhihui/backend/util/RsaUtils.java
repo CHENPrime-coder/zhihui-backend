@@ -2,7 +2,6 @@ package zhihui.backend.util;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.util.Base64Utils;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -17,6 +16,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
+import java.util.Base64;
 
 /**
  * RSA加解密工具
@@ -45,7 +45,7 @@ public class RsaUtils {
                 .replaceAll(System.lineSeparator(), "")
                 .replace("-----END PUBLIC KEY-----", "");
 
-        byte[] decoded = Base64Utils.decode(publicKeyPem.getBytes());
+        byte[] decoded = Base64.getMimeDecoder().decode(publicKeyPem.getBytes());
 
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         X509EncodedKeySpec keySpec = new X509EncodedKeySpec(decoded);
@@ -68,7 +68,7 @@ public class RsaUtils {
                 .replaceAll(System.lineSeparator(), "")
                 .replace("-----END PRIVATE KEY-----", "");
 
-        byte[] decoded = Base64Utils.decode(privateKeyPem.getBytes());
+        byte[] decoded = Base64.getMimeDecoder().decode(privateKeyPem.getBytes());
 
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(decoded);
@@ -86,7 +86,7 @@ public class RsaUtils {
             Cipher cipher = Cipher.getInstance("RSA/ECB/PKCS1Padding");
             cipher.init(Cipher.ENCRYPT_MODE, getRsaPublicKey());
             byte[] output = cipher.doFinal(content.getBytes());
-            byte[] encode = Base64Utils.encode(output);
+            byte[] encode = Base64.getMimeEncoder().encode(output);
             return new String(encode, "UTF-8");
         }catch (Exception e){
             e.printStackTrace();
@@ -108,7 +108,8 @@ public class RsaUtils {
 
     //长度过长分割解密
     private String getMaxResultDecrypt(String str, Cipher cipher) throws IllegalBlockSizeException, BadPaddingException, IOException {
-        byte[] inputArray = Base64Utils.decode(str.getBytes("UTF-8"));
+        byte[] inputArray = Base64.getMimeDecoder().decode(str.getBytes("UTF-8"));
+
         int inputLength = inputArray.length;
         // 最大解密字节数，超出最大字节数需要分组加密
         int maxEncryptBlock = 256;

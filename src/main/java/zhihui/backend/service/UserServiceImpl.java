@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.UUID;
 
 /**
@@ -79,7 +80,13 @@ public class UserServiceImpl implements UserDetailsService {
         user.setUserPassword("{bcrypt}"+encodedPassword);
 
         // 执行插入用户操作
-        Integer integer = userDaoMapper.insertUser(user);
+        Integer integer;
+        try {
+            integer = userDaoMapper.insertUser(user);
+        } catch (DuplicateKeyException e) {
+            return ResultData.success("注册失败, 邮件或用户名已重复", null);
+        }
+
 
         // 用户注册失败
         if (integer != 1) {
