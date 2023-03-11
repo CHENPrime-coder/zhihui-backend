@@ -1,9 +1,9 @@
 spring:
   mail:
-    host: smtp.office365.com
-    username: 'your-outlook-email-addr'
-    password: 'your-microsoft-account-password'
-    port: 587
+    host: smtphz.qiye.163.com
+    username: no-reply@zhihui02.ntesmail.com
+    password: 3f1fa4a881A
+    port: 25
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
@@ -12,7 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/zhihui?characterEncoding=UTF-8&useSSL=false
     username: root
-    password: 'your-sql-root-password'
+    password: 8d41e114c69a6ebe53d5
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
 mybatis:
@@ -30,13 +30,13 @@ redis:
   password:
   port: 6379
 email:
-  enable: false
+  enable: true
   expire-time: 5
-  send-as: 'your-sender-email-addr'
+  send-as: no-reply@zhihui02.ntesmail.com
 file:
-  image-path: 'your-image-dest-path'
-  file-path: 'your-file-dest-path'
-  video-path: 'your-video-dest-path'
+  image-path: '/zhihui/zhihui-image/'
+  file-path: '/zhihui/zhihui-file/'
+  video-path: '/zhihui/zhihui-video/'
 rsa:
-  private-key-file-path: 'your-private-rsa-key-filepath'
-  public-key-file-path: 'your-public-rsa-key-filepath'
+  private-key-file-path: '/zhihui/zhihui-keys/private.pem'
+  public-key-file-path: '/zhihui/zhihui-keys/public.pem'
