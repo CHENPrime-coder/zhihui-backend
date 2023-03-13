@@ -41,5 +41,5 @@ rsa:
   private-key-file-path: 'your-private-rsa-key-filepath'
   public-key-file-path: 'your-public-rsa-key-filepath'
 jwt-utils:
-  key: "CHENPRIME"
+  key: "your-jwt-key"
   expire-time: 48
