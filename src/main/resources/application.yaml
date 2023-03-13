@@ -12,7 +12,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/zhihui?characterEncoding=UTF-8&useSSL=false
     username: root
-    password: 8d41e114c69a6ebe53d5
+    password: 123456
   jackson:
     date-format: yyyy-MM-dd HH:mm:ss
 mybatis:
@@ -30,13 +30,16 @@ redis:
   password:
   port: 6379
 email:
-  enable: true
+  enable: false
   expire-time: 5
   send-as: no-reply@zhihui02.ntesmail.com
 file:
-  image-path: '/zhihui/zhihui-image/'
-  file-path: '/zhihui/zhihui-file/'
-  video-path: '/zhihui/zhihui-video/'
+  image-path: 'D:\upload\zhihui-image\'
+  file-path: 'D:\upload\zhihui-file\'
+  video-path: 'D:\upload\zhihui-video\'
 rsa:
-  private-key-file-path: '/zhihui/zhihui-keys/private.pem'
-  public-key-file-path: '/zhihui/zhihui-keys/public.pem'
+  private-key-file-path: 'D:\code\zhihui-backend\src\main\resources\private.pem'
+  public-key-file-path: 'D:\code\zhihui-backend\src\main\resources\public.pem'
+jwt-utils:
+  key: "CHENPRIME"
+  expire-time: 48

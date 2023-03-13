@@ -41,33 +41,33 @@ public class EmailController {
      * 邮件注册验证码发送
      */
     @GetMapping("/reg/send")
-    public ResultData<String> sendReg(@RequestParam("addr") String addr) {
+    public String sendReg(@RequestParam("addr") String addr) {
         Boolean checkResult = userService.checkEmail(addr);
 
         // 如果邮件重复了
         if (! checkResult) {
-            return ResultData.success("邮件已重复", null);
+            return "邮件已重复";
         }
         // 邮件未重复
         emailService.sendVerifyEmail(addr);
 
-        return ResultData.success(null);
+        return null;
     }
 
     @PostMapping("/verify")
-    public ResultData<String> verify(@RequestBody HashMap<String, Object> body) {
+    public String verify(@RequestBody HashMap<String, Object> body) {
         if (body.get(EMAIL_PARAM_NAME) == null || body.get(CODE_PARAM_NAME) == null) {
-            return ResultData.success("请求参数不完整", null);
+            return "请求参数不完整";
         }
 
         Boolean verifyResult = emailService.verifyCode(body.get(EMAIL_PARAM_NAME).toString(),
                 body.get(CODE_PARAM_NAME).toString());
         // 验证失败
         if (! verifyResult) {
-            return ResultData.success("验证失败，验证码错误", null);
+            return "验证失败，验证码错误";
         }
 
-        return ResultData.success("验证成功");
+        return "验证成功";
     }
 
 }

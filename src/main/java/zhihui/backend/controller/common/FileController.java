@@ -27,18 +27,18 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public ResultData<Object> uploadImage(@RequestParam("file") MultipartFile file,
+    public Object uploadImage(@RequestParam("file") MultipartFile file,
                                                       @RequestParam("fileType") Integer fileType,
                                                       @RequestParam("operationID") String operationID,
                                                       HttpServletRequest request) throws IOException {
         if (file == null || file.getOriginalFilename() == null) {
-            return ResultData.success("上传的文件或文件名为空", null);
+            return "上传的文件或文件名为空";
         }
 
         Map<String, Object> result = null;
         result = fileService.uploadFile(file, fileType, operationID, request);
 
-        return ResultData.success(result);
+        return result;
     }
 
 }

@@ -32,14 +32,14 @@ public class RegController {
     }
 
     @PostMapping("/reg")
-    public ResultData<String> reg(@RequestBody User user) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+    public String reg(@RequestBody User user) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
         // 验证参数完整性
         if (user.getUserEmail() == null || user.getUsername() == null || user.getUserPassword() == null ||
                 user.getUserMajor() == null || user.getUserGrade() == null) {
-            return ResultData.success("请求参数不完整", null);
+            return "请求参数不完整";
         }
 
-        ResultData<String> insertResult = userService.insertUser(user);
+        String insertResult = userService.insertUser(user);
 
         return insertResult;
     }

@@ -1,10 +1,10 @@
 package zhihui.backend.pojo;
 
-import com.mysql.cj.jdbc.Blob;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
 import java.util.Date;
 
 /**

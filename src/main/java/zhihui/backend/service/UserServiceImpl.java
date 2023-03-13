@@ -3,6 +3,7 @@ package zhihui.backend.service;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import zhihui.backend.exception.EmailNotFoundException;
 import zhihui.backend.mapper.UserDaoMapper;
-import zhihui.backend.pojo.ResultData;
 import zhihui.backend.pojo.User;
+import zhihui.backend.util.JwtUtils;
 import zhihui.backend.util.RsaUtils;
 
 import javax.crypto.BadPaddingException;
@@ -22,8 +23,8 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 用户服务
@@ -35,11 +36,15 @@ public class UserServiceImpl implements UserDetailsService {
 
     private final UserDaoMapper userDaoMapper;
     private final RsaUtils rsaUtils;
+    private final RedisTemplate<String, Object> redisTemplate;
+    private final JwtUtils jwtUtils;
 
     @Autowired
-    public UserServiceImpl(UserDaoMapper userDaoMapper, RsaUtils rsaUtils) {
+    public UserServiceImpl(UserDaoMapper userDaoMapper, RsaUtils rsaUtils, RedisTemplate redisTemplate, JwtUtils jwtUtils) {
         this.userDaoMapper = userDaoMapper;
         this.rsaUtils = rsaUtils;
+        this.redisTemplate = redisTemplate;
+        this.jwtUtils = jwtUtils;
     }
 
     @Override
@@ -67,7 +72,7 @@ public class UserServiceImpl implements UserDetailsService {
         return user;
     }
 
-    public ResultData<String> insertUser(User user) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
+    public String insertUser(User user) throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, IOException, InvalidKeySpecException, BadPaddingException, InvalidKeyException {
         String uuid = UUID.randomUUID().toString().replace("-", "");
         user.setUserNameId("zhihui_"+uuid);
 
@@ -84,17 +89,17 @@ public class UserServiceImpl implements UserDetailsService {
         try {
             integer = userDaoMapper.insertUser(user);
         } catch (DuplicateKeyException e) {
-            return ResultData.success("注册失败, 邮件或用户名已重复", null);
+            return "注册失败, 邮件或用户名已重复";
         }
 
 
         // 用户注册失败
         if (integer != 1) {
             log.error("用户注册失败 email: "+user.getUserEmail());
-            return ResultData.success("注册失败", null);
+            return "注册失败";
         }
         // 注册成功
-        return ResultData.success("注册成功");
+        return "注册成功";
     }
 
     /**
@@ -106,5 +111,27 @@ public class UserServiceImpl implements UserDetailsService {
         Boolean result = userDaoMapper.selectEmail(addr) != 1;
 
         return result;
+    }
+
+    /**
+     * 把 token 存放到 redis 的 token 黑名单中，实现销毁token
+     * @param token 要销毁的 token
+     */
+    public void destroyToken(String token) {
+        redisTemplate.opsForValue().set("token-blacklist:"+token.hashCode(), token, jwtUtils.expireTime, TimeUnit.HOURS);
+    }
+
+    /**
+     * 验证 token 是否有效
+     * @param token 要验证的 token
+     * @return 验证结果 false: 验证失败 true: 验证成功
+     */
+    public Boolean checkToken(String token) {
+        String redisToken = (String) redisTemplate.opsForValue().get("token-blacklist:" + token.hashCode());
+
+        if (redisToken != null) {
+            return ! token.equals(redisToken);
+        }
+        return jwtUtils.verify(token);
     }
 }

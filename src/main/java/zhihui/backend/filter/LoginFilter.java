@@ -1,33 +1,17 @@
 package zhihui.backend.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationServiceException;
-import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.rememberme.AbstractRememberMeServices;
-import org.springframework.stereotype.Component;
-import org.springframework.util.ObjectUtils;
-import zhihui.backend.config.security.EmailAuthenticationProvider;
 import zhihui.backend.config.security.EmailAuthenticationToken;
-import zhihui.backend.constant.CommonConstant;
 import zhihui.backend.constant.LoginTypeConstant;
-import zhihui.backend.handler.security.CustomAuthFailureHandler;
-import zhihui.backend.handler.security.CustomAuthSuccessHandler;
-import zhihui.backend.util.SpringContextHolder;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -38,10 +22,6 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     @Autowired
     public LoginFilter() {
         this.setFilterProcessesUrl("/login");
-        // 登陆成功处理器
-        this.setAuthenticationSuccessHandler(new CustomAuthSuccessHandler());
-        // 登陆失败处理器
-        this.setAuthenticationFailureHandler(new CustomAuthFailureHandler());
     }
 
     @Override
@@ -78,6 +58,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
                     emailAuthenticationToken.setVc(captcha);
 
                     // 执行验证
+
                     return getAuthenticationManager().authenticate(emailAuthenticationToken);
                 case CLASSIC:
                     // 用户名，密码登陆
