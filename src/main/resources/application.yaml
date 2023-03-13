@@ -40,3 +40,6 @@ file:
 rsa:
   private-key-file-path: '/zhihui/zhihui-keys/private.pem'
   public-key-file-path: '/zhihui/zhihui-keys/public.pem'
+jwt-utils:
+  key: "CHENPRIME"
+  expire-time: 48
